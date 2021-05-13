@@ -17,8 +17,8 @@ client.on('message', (message)=>{
     if(message.content.startsWith(PREFIX)){
         const [cmd, ...args] = message.content 
         .trim() 
-        .substring(PREFIX.length) //trim removes all white spaces
-        .split(/\s+/);//this expression basically captures all the white spaces
+        .substring(PREFIX.length) 
+        .split(/\s+/);
         console.log(cmd);
         console.log(args);
 
