@@ -4,27 +4,18 @@ require('dotenv').config();
 
 const https = require('https')
 
-// console.log(process.env.BOT_TOKEN);
 
-const {Client, MessageAttachment, MessageEmbed} = require('discord.js'); //importing from this lib. also {} means object destructuring meaning we can directly import certain functions from the whole main class
+const {Client, MessageAttachment, MessageEmbed} = require('discord.js');nctions from the whole main class
 
-const client = new Client(); //this is an instance of the Client class
+const client = new Client(); 
 
 const PREFIX = '!';
 
-client.on('ready', ()=>console.log('logged in')); //ready is the event we want to handle
-//also can log: client.user.tag or client.user.username for bot
-
+client.on('ready', ()=>console.log('logged in')); 
 client.on('message', (message)=>{
-    // console.log(message.content);
-    // console.log(message.author.username);
-    // console.log(message.author.tag);
-    // if(message.content === "h" && message.author.bot == false){ //or && message.author.username != 'Bot1'
-    //     message.channel.send('h');
-    // }
     if(message.author.bot == true) return;
     if(message.content.startsWith(PREFIX)){
-        const [cmd, ...args] = message.content //... is the spreader operator which means it takes as many as there are and this whole does that stores the first part in cmd then all whitespaces separate chars and save them to arrays
+        const [cmd, ...args] = message.content 
         .trim() 
         .substring(PREFIX.length) //trim removes all white spaces
         .split(/\s+/);//this expression basically captures all the white spaces
@@ -37,16 +28,10 @@ client.on('message', (message)=>{
             if(!message.member.hasPermission('KICK_MEMBERS'))
                 return message.channel.send('You do not have permissions to kick that user');
             if(args.length===0) return message.reply('Please provide an ID');
-            // const member = message.guild.members.cache.get(args[0]) //guild means server
-            // console.log(member);
-            // const member = message.guild.members.cache.find(x=>x.user.username == user)
             const member = message.mentions.members.first() || 
             message.guild.members.cache.get(args[0]) || 
             message.guild.members.cache.find(x=>x.user.username == args[0]);
 
-            // console.log('----------------------');
-            // console.log(user);
-            // console.log('----------------------')
             if(member){
                 member
                 .kick()
@@ -93,20 +78,11 @@ client.on('message', (message)=>{
                 } else {
                     message.channel.send('Mentioned user not found')
                 }
-                // console.log(avtrMention.avatarURL)
                 
             }
             
         }else if(cmd === 'joke'){
-            // fetch('https://official-joke-api.appspot.com/random_joke')
-            //     .then((res)=> res.json())
-            //     .then((data) => {
-            //         console.log(data)
-            //         // message.channel.send(data.setup);
-            //         // message.channel.send('||' + data.punchline + '||');
-            //     })
             https.get('https://official-joke-api.appspot.com/random_joke', (res)=>{
-                // console.log(res.statusCode);
                 res.on('data', (data)=>{
                     const joke = JSON.parse(data);
                     message.channel.send(`${joke.setup}`);
@@ -121,17 +97,7 @@ client.on('message', (message)=>{
                 })
             })
         } else if(cmd === 'addRole'){
-            // let roleToBeAddedTo = args[0];
-            // let roleTarget = args[1];
-            // console.log('member: '+roleToBeAddedTo.substring(3, 21))
-            // console.log("role: " + roleTarget.substring(3, 21));
-            // let isMember = message.guild.members.cache.get(roleToBeAddedTo.substring(3, 21));
-            // if(isMember){
-            //     // console.log('found');
-            //     message.mentions.members.first().roles.add(message.mentions.roles.first()).catch(console.log(err))
-            // } else {
-            //     console.log('not found')
-            // }
+            
             if(args.length == 0){
                 message.channel.send('Please mention the user, followed by the role you want him to give');
             }
@@ -156,13 +122,7 @@ client.on('message', (message)=>{
                     
                 }
             }
-            ///////////////////////////////////////////////////////////////////
-            // let roleTarget = args[1];
-            // let role = message.guild.roles.cache.find(r => r.name === roleTarget);
-            // let a = message.mentions.members.first()
-            // a.roles.add(role).catch(console.log('error'));
         }else if(cmd === 'removeRole'){
-            // console.log('role removed')
             if(args.length === 0){
                 message.channel.send('Please mention the user followed by the role you want to remove');
             } else if(args.length === 1){
@@ -216,7 +176,6 @@ client.on('message', (message)=>{
         } else if(cmd === 'find'){
             if(args.length === 0){
                 let user = message.guild.members.cache.get(message.author.id);
-                // console.log(user)
                 let totalRoles = []
                 user._roles.forEach((a)=>{
                     let foundRoles = message.guild.roles.cache.get(a);
@@ -238,7 +197,6 @@ client.on('message', (message)=>{
             } else {
                 let mentionedUser2 = message.mentions.users.first();
                 if(mentionedUser2){
-                    // console.log('asdf')
                     let mentionedUser3 = message.mentions.members.first();
                     console.log(mentionedUser3)
                     let roles = mentionedUser3._roles;
@@ -247,7 +205,6 @@ client.on('message', (message)=>{
                         let asdf = message.guild.roles.cache.find(r => r.id === single);
                         rolesMention.push(asdf);
                     })
-                    // console.log(message.guild.roles.cache.find(r => r.id == mentionedUser2.roles))
                     let newEmbed = new MessageEmbed()
                         .setAuthor(mentionedUser2.username + '#' + mentionedUser2.discriminator)
                         .setThumbnail(message.mentions.users.first().avatarURL())
@@ -276,4 +233,4 @@ client.on('guildMemberAdd', newMember => {
     channel.send(`Welcome to the server, ${newMember}!`);
 });
 
-client.login(process.env.BOT_TOKEN)//to login the bot
+client.login(process.env.BOT_TOKEN)
